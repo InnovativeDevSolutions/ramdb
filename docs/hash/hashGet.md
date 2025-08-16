@@ -1,0 +1,65 @@
+---
+title: ArmaRAMDb - Hash Get
+icon: mdi:file-text-outline
+excerpt: Get a field value from the current/specific client hash table in RAMDb.
+---
+
+# ramdb_db_fnc_hget
+
+## Description
+Retrieves the value associated with a specific field in the hash table of the current/specific client.
+
+## Syntax
+```sqf
+[_key, _keyField, _object, _function, _call] call ramdb_db_fnc_hget
+```
+
+## Parameters
+| Parameter | Type | Description | Default |
+|-----------|------|-------------|---------|
+| `_key` | String | Key to receive the data from | "" |
+| `_keyField` | String | Name of the field in the hash to retrieve | "" |
+| `_object` | Object | (Optional) The target to receive the data | "" |
+| `_function` | String | Name of the function to receive the retrieved data | "" |
+| `_call` | Boolean | Whether to call the function directly (true) or spawn (false) | false |
+
+## Return Value
+The retrieved data.
+
+## Examples
+### Retrieve a player's loadout:
+```sqf
+["", "loadout"] call ramdb_db_fnc_hget;
+[getPlayerUID player, "loadout"] call ramdb_db_fnc_hget;
+```
+
+### Retrieve data with synchronous callback:
+```sqf
+["", "playerScore", "", "ramdb_db_fnc_processScore", true] call ramdb_db_fnc_hget;
+```
+
+### Retrieve data and send it to a specific client:
+```sqf
+[getPlayerUID player, "loadout", netId player, "ramdb_db_fnc_test", false] remoteExecCall ["ramdb_db_fnc_hget", 2, false];
+```
+
+## Notes
+- Retrieves a value from the current/specific client's hash table
+- Input validation ensures both required parameters are non-empty
+- When a object is provided, the data is sent to that specific client
+- The `_call` parameter determines whether the function is called directly (synchronous) or spawned (asynchronous)
+- All operations are logged for debugging purposes
+
+## Related Functions
+- `ramdb_db_fnc_hgetall`: Retrieves all fields from the current/specific client's hash table
+- `ramdb_db_fnc_hrem`: Removes a field from the current/specific client's hash table
+- `ramdb_db_fnc_hset`: Sets a field value pair in the current/specific client's hash table
+- `ramdb_db_fnc_hmset`: Sets multiple field value pairs in the current/specific client's hash table
+
+## Links
+
+[Hash Get](hashGet.md) |
+[Hash Get All](hashGetAll.md) |
+[Hash Remove](hashRemove.md) |
+[Hash Set](hashSet.md) |
+[Hash Set Bulk](hashSetBulk.md)

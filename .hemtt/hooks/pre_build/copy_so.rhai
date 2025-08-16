@@ -1,0 +1,1 @@
+HEMTT_RFS.join("extension").join("artifacts").join("native").join("ArmaRAMDb_x64.so").copy(HEMTT_RFS.join("ArmaRAMDb_x64.so"));

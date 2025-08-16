@@ -1,0 +1,72 @@
+---
+title: ArmaRAMDb - List Load
+icon: mdi:file-text-outline
+excerpt: Get all elements of a list stored at a key from RAMDb.
+---
+
+# ramdb_db_fnc_lrange
+
+## Description
+
+Retrieves all elements of a list stored at a specified key from the RAMDb database. This function is useful when you need to access the complete list data rather than individual elements, allowing operations on the entire dataset.
+
+## Syntax
+
+```sqf
+[_key, _start, _end, _object, _function, _call] call ramdb_db_fnc_lrange
+```
+
+## Parameters
+
+| Parameter | Type | Description | Default |
+|-----------|------|-------------|---------|
+| `_key` | String | The key identifying the list to be retrieved | "" |
+| `_start` | Number | The starting index to fetch data | 0 |
+| `_end` | Number | The ending index to fetch data | -1 |
+| `_object` | Object  | (Optional) The target to receive the data | "" |
+| `_function` | String | The name of the function that will receive the retrieved data | "" |
+| `_call` | Boolean | Whether to call the function in an unscheduled environment | false |
+
+## Return Value
+The retrieved list data.
+
+## Examples
+
+**Retrieve all event logs:**
+```sqf
+["events", 0, -1, "", "myProject_fnc_processEventLogs"] call ramdb_db_fnc_lrange;
+```
+
+**Retrieve a player list with synchronous callback:**
+```sqf
+["playerList", 0, -1, "", "myProject_fnc_processPlayerList", true] call ramdb_db_fnc_lrange;
+```
+
+**Send mission data to a specific client:**
+```sqf
+["missionData", 0, -1, player, "myProject_fnc_processMissionData"] remoteExecCall ["ramdb_db_fnc_lrange", 2, false];
+```
+
+## Notes
+
+- This function retrieves the entire list stored at the specified key, making it useful when you need to process multiple elements together.
+- For multiplayer scenarios, you can specify a target client using the `_obj` parameter to send the retrieved data to that specific client.
+- The `_call` parameter determines whether the callback function is executed in an unscheduled environment (true) or scheduled environment (false).
+- This function uses the underlying "lrange" extension with a range from 0 to -1, which retrieves all elements in the list.
+- All list operations are logged for debugging purposes.
+
+## Related Functions
+- `ramdb_db_fnc_lpush`: Adds an element to the front of a list
+- `ramdb_db_fnc_rpush`: Adds an element to the back of a list
+- `ramdb_db_fnc_lindex`: Retrieves a specific element from a list
+- `ramdb_db_fnc_lset`: Replaces a specific element in a list
+- `ramdb_db_fnc_lrem`: Removes a specific element from a list
+
+## Links
+
+[List Add](listAdd.md) |
+[List Delete](listDelete.md) |
+[List Get](listGet.md) |
+[List Load](listLoad.md) |
+[List Remove](listRemove.md) |
+[List Set](listSet.md)

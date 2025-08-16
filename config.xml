@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ArmaRAMDb>
+  <!-- Context logging enabled -->
+  <Setting>false</Setting>
+  <!-- Debug mode enabled -->
+  <Setting>false</Setting>
+  <!-- Auto backup enabled -->
+  <Setting>true</Setting>
+  <!-- Backup frequency in minutes -->
+  <Setting>15</Setting>
+  <!-- Maximum number of backups to keep -->
+  <Setting>10</Setting>
+</ArmaRAMDb>

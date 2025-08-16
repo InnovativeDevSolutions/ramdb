@@ -1,0 +1,68 @@
+---
+title: ArmaRAMDb - List Get
+icon: mdi:file-text-outline
+excerpt: Get element of list stored at key from RAMDb.
+---
+
+# ramdb_db_fnc_lindex
+
+## Description
+Retrieves a specific element from a list stored in the database by its index. This function accesses a single item from a list using its position number and returns the data. It's useful for accessing individual pieces of data from a sequence without retrieving the entire list.
+
+## Syntax
+```sqf
+[_key, _index, _object, _function, _call] call ramdb_db_fnc_lindex
+```
+
+## Parameters
+| Parameter | Type | Description | Default |
+|-----------|------|-------------|---------|
+| `_key` | String | Name of the list | "" |
+| `_index` | Number | Index position of the element to retrieve (0-based) | -1 |
+| `_object` | Object | (Optional) The target to receive the data | "" |
+| `_function` | String | Name of the function to receive the retrieved data | "" |
+| `_call` | Boolean | Whether to call the function directly (true) or spawn (false) | false |
+
+## Return Value
+The retrieved data.
+
+## Examples
+### Retrieve a specific event log entry:
+```sqf
+["events", 0] call ramdb_db_fnc_lindex;
+```
+
+### Retrieve data with synchronous callback:
+```sqf
+["messages", 5, "", "ramdb_db_fnc_processMessage", true] call ramdb_db_fnc_lindex;
+```
+
+### Retrieve data and send it to a specific client:
+```sqf
+["notifications", 0, player, "ramdb_db_fnc_displayNotification"] remoteExecCall ["ramdb_db_fnc_lindex", 2, false];
+```
+
+## Notes
+- Retrieves a single element from a list by its index position
+- Index is zero-based (the first element is at index 0)
+- If the index is out of bounds or the list doesn't exist, no data will be returned
+- When a object is provided, the data is sent to that specific client
+- The `_call` parameter determines whether the function is called directly (synchronous) or spawned (asynchronous)
+- For retrieving multiple elements, use `lindex` instead
+- All operations are logged for debugging purposes
+
+## Related Functions
+- `ramdb_db_fnc_lpush`: Adds an element to the front of a list
+- `ramdb_db_fnc_rpush`: Adds an element to the back of a list
+- `ramdb_db_fnc_lrange`: Retrieves a range of elements from a list
+- `ramdb_db_fnc_lset`: Replaces a specific element in a list
+- `ramdb_db_fnc_lrem`: Removes a specific element from a list
+
+## Links
+
+[List Add](listAdd.md) |
+[List Delete](listDelete.md) |
+[List Get](listGet.md) |
+[List Load](listLoad.md) |
+[List Remove](listRemove.md) |
+[List Set](listSet.md)

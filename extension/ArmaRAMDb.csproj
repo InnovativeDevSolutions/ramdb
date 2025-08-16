@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>Enable</ImplicitUsings>
+    <Nullable>Disable</Nullable>
+    <AssemblyName>$(MSBuildProjectName)_x64</AssemblyName>
+    <RootNamespace>ArmaRAMDb</RootNamespace>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+
+  <Target Name="PublishAllPlatforms">
+    <Exec Command="dotnet publish -f net8.0 -c Release -r win-x64 -p:PublishAot=true -p:NativeLib=Shared -p:SelfContained=true" />
+    <Exec Command="wsl -e bash -ic &quot;dotnet publish -f net8.0 -c Release -r linux-x64 -p:PublishAot=true -p:NativeLib=Shared -p:SelfContained=true&quot;" />
+  </Target>
+</Project>

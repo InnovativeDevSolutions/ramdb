@@ -1,0 +1,51 @@
+---
+title: ArmaRAMDb - Get Key
+icon: mdi:file-text-outline
+excerpt: Get the value of stored key from RAMDb.
+---
+
+# ramdb_db_fnc_get
+
+## Description
+Retrieves the value of a stored key from the database. This function performs an asynchronous request to the database and passes the retrieved data to the specified callback function.
+
+## Syntax
+```sqf
+[_key, _object, _function, _call] call ramdb_db_fnc_get
+```
+
+## Parameters
+| Parameter | Type | Description | Default |
+|-----------|------|-------------|---------|
+| `_key` | String | Name of the stored key to retrieve from the database | "" |
+| `_object` | Object | (Optional) The target to receive the data | "" |
+| `_function` | String | Name of the function to call when data is retrieved | "" |
+| `_call` | Boolean | Whether to call the function directly (true) or spawn (false) | false |
+
+## Return Value
+The data retrieved.
+
+## Examples
+### Retrieve data in singleplayer or on the server:
+```sqf
+[getPlayerUID player, "ramdb_db_fnc_test"] call ramdb_db_fnc_get;
+```
+
+### Retrieve data on the server and send to a specific client:
+```sqf
+[getPlayerUID player, netId player, "ramdb_db_fnc_test"] remoteExecCall ["ramdb_db_fnc_get", 2, false];
+```
+
+## Notes
+- For large data that exceeds buffer limits, it will be automatically chunked and reassembled
+- The `_call` parameter determines whether the callback is executed directly or spawned in a separate thread
+
+## Related Functions
+- `ramdb_db_fnc_set`: Stores a value by key
+- `ramdb_db_fnc_delete`: Removes a key
+
+## Links
+
+[Delete Key](delete.md) |
+[Get Key](get.md) |
+[Set Key](set.md)

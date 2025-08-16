@@ -1,0 +1,71 @@
+---
+title: ArmaRAMDb - List Remove
+icon: mdi:file-text-outline
+excerpt: Remove an element from a list stored at a key in RAMDb.
+---
+
+# ramdb_db_fnc_lrem
+
+## Description
+
+Removes a specific element from a list stored at a specified key in the RAMDb database. This function allows for precise control over list content by targeting individual elements by their index, without affecting other elements in the list. This is particularly useful for removing outdated or no longer needed entries.
+
+## Syntax
+
+```sqf
+[_key, _index] call ramdb_db_fnc_lrem
+```
+
+## Parameters
+
+| Parameter | Type | Description | Default |
+|-----------|------|-------------|---------|
+| _key | String | The key identifying the list from which to remove an element | "" |
+| _index | Number | The zero-based index of the element to remove from the list | -1 |
+
+## Return Value
+
+None. The operation runs synchronously to remove the element immediately.
+
+## Examples
+
+**Remove the first element from an event log:**
+```sqf
+["eventLog", 0] call ramdb_db_fnc_lrem;
+```
+
+**Remove a specific player record:**
+```sqf
+["playerRecords", 5] call ramdb_db_fnc_lrem;
+```
+
+**Remove an element from a multiplayer environment:**
+```sqf
+["sharedData", 2] remoteExecCall ["ramdb_db_fnc_lrem", 2, false];
+```
+
+## Notes
+
+- This function removes only the element at the specified index. All other elements remain unchanged, though their indices may shift.
+- The index is zero-based, meaning the first element is at index 0, the second at index 1, and so on.
+- If an invalid index is provided (negative or exceeding the list length), the operation will not remove any elements.
+- The `_key` parameter must be a non-empty string, otherwise the function will exit without performing any action.
+- After removing an element, all subsequent elements shift down by one index to maintain a contiguous list.
+- The removal operation is permanent and cannot be undone except by re-adding the element.
+- All list operations are logged for debugging purposes.
+
+## Related Functions
+- `ramdb_db_fnc_lpush`: Adds an element to the front of a list
+- `ramdb_db_fnc_rpush`: Adds an element to the back of a list
+- `ramdb_db_fnc_lindex`: Retrieves a specific element from a list
+- `ramdb_db_fnc_lrange`: Retrieves a range of elements from a list
+- `ramdb_db_fnc_lset`: Replaces a specific element in a list
+
+## Links
+
+[List Add](listAdd.md) |
+[List Delete](listDelete.md) |
+[List Get](listGet.md) |
+[List Load](listLoad.md) |
+[List Remove](listRemove.md) |
+[List Set](listSet.md)

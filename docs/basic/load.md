@@ -1,0 +1,47 @@
+---
+title: ArmaRAMDb - Load DB
+icon: mdi:file-text-outline
+excerpt: Load DB from disc.
+---
+
+# ramdb_db_fnc_load
+
+## Description
+Loads the database from disk storage. This function restores all data (key-value pairs, hash tables, and lists) from the previously saved database file.
+
+## Syntax
+```sqf
+[] call ramdb_db_fnc_load
+```
+
+## Parameters
+None. This function does not require any parameters.
+
+## Return Value
+None. The operation runs synchronously and loads the database immediately.
+
+## Examples
+### Load the database on the server:
+```sqf
+[] call ramdb_db_fnc_load;
+```
+
+### Call the load function remotely from a client:
+```sqf
+[] remoteExecCall ["ramdb_db_fnc_load", 2, false];
+```
+
+## Notes
+- This function should typically be called during server initialization
+- Any existing data in memory will be overwritten with the data from disk
+- If no database file exists, nothing will happen
+- Loading does not affect ongoing operations, but might replace values in memory
+- For safety, it's recommended to call this function only when necessary
+
+## Related Functions
+- `ramdb_db_fnc_save`: Saves the database to disk
+
+## Links
+
+[Save DB](save.md) |
+[Load DB](load.md)

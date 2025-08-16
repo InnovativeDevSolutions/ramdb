@@ -1,0 +1,65 @@
+---
+title: ArmaRAMDb - Hash Get All
+icon: mdi:file-text-outline
+excerpt: Get all fields from the current/specific client's hash table in RAMDb.
+---
+
+# ramdb_db_fnc_hgetall
+
+## Description
+Retrieves all fields and values from the hash table associated with the current/specific client/player.
+
+## Syntax
+```sqf
+[_key, _object, _function, _call] call ramdb_db_fnc_hgetall
+```
+
+## Parameters
+| Parameter | Type | Description | Default |
+|-----------|------|-------------|---------|
+| `_key` | String | Key to receive the data from | "" |
+| `_object` | Object | (Optional) The target to receive the data | "" |
+| `_function` | String | Name of the function to receive the retrieved data | "" |
+| `_call` | Boolean | Whether to call the function directly (true) or spawn (false) | false |
+
+## Return Value
+The retrieved data.
+
+## Examples
+### Retrieve all client hash data:
+```sqf
+[] call ramdb_db_fnc_hgetall;
+[getPlayerUID player] call ramdb_db_fnc_hgetall;
+```
+
+### Retrieve data with synchronous callback:
+```sqf
+[getPlayerUID player, netId player, "ramdb_db_fnc_processAllData", true] call ramdb_db_fnc_hgetall;
+```
+
+### Retrieve data and send it to a specific client:
+```sqf
+[getPlayerUID player, netId player, "ramdb_db_fnc_test"] remoteExecCall ["ramdb_db_fnc_hgetall", 2, false];
+```
+
+## Notes
+- Returns the complete hash table for the current/specific client with all fields and values as a nested array
+- When a netId is provided, the data is sent to that specific client
+- The `_call` parameter determines whether the function is called directly (synchronous) or spawned (asynchronous)
+- For large hash tables, retrieving all data may impact performance
+- All operations are logged for debugging purposes
+
+## Related Functions
+- `ramdb_db_fnc_hget`: Retrieves a field value from the current/specific client's hash table
+- `ramdb_db_fnc_hrem`: Removes a field from the current/specific client's hash table
+- `ramdb_db_fnc_hset`: Sets a field value pair in the current/specific client's hash table
+- `ramdb_db_fnc_hmset`: Sets multiple field value pairs in the current/specific client's hash table
+
+## Links
+
+[Hash Delete](hashDelete.md) |
+[Hash Get](hashGet.md) |
+[Hash Get All](hgetall.md) |
+[Hash Remove](hashRemove.md) |
+[Hash Set](hashSet.md) |
+[Hash Set Bulk](hashSetBulk.md)
