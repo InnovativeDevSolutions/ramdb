@@ -23,7 +23,7 @@ params [
     ["_fields", [], [[]]]
 ];
 
-if (count _fields == 0) exitWith {
+if (_fields isEqualTo []) exitWith {
     diag_log text format ["ArmaRAMDb: 'ramdb_db_fnc_hdel' Invalid Input for Fields '%1'", _fields];
 };
 
