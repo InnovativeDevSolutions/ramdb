@@ -81,32 +81,46 @@ namespace ArmaRAMDb
         /// <param name="writer">The BinaryWriter instance to write the serialized data to.</param>
         public static void WriteToDisc(BinaryWriter writer)
         {
+            // Create snapshots of all collections to avoid concurrent modification issues
+            var kvSnapshot = RamDb.KvStore.ToArray();
+            var hashSnapshot = RamDb.HashStore.ToArray();
+            var listSnapshot = RamDb.ListStore.ToArray();
+
             writer.Write(RamDb.CurrentVersion);
-            writer.Write(RamDb.KvStore.Count);
-            foreach (var pair in RamDb.KvStore)
+            
+            // Write KV Store
+            writer.Write(kvSnapshot.Length);
+            foreach (var pair in kvSnapshot)
             {
                 writer.Write(pair.Key);
                 writer.Write(pair.Value);
             }
 
-            writer.Write(RamDb.HashStore.Count);
-            foreach (var hash in RamDb.HashStore)
+            // Write Hash Store
+            writer.Write(hashSnapshot.Length);
+            foreach (var hash in hashSnapshot)
             {
+                var hashFieldsSnapshot = hash.Value.ToArray();
                 writer.Write(hash.Key);
-                writer.Write(hash.Value.Count);
-                foreach (var field in hash.Value)
+                writer.Write(hashFieldsSnapshot.Length);
+                foreach (var field in hashFieldsSnapshot)
                 {
                     writer.Write(field.Key);
                     writer.Write(field.Value);
                 }
             }
 
-            writer.Write(RamDb.ListStore.Count);
-            foreach (var list in RamDb.ListStore)
+            // Write List Store
+            writer.Write(listSnapshot.Length);
+            foreach (var list in listSnapshot)
             {
+                var listItemsSnapshot = list.Value.ToArray();
                 writer.Write(list.Key);
-                writer.Write(list.Value.Count);
-                foreach (var item in list.Value) writer.Write(item);
+                writer.Write(listItemsSnapshot.Length);
+                foreach (var item in listItemsSnapshot)
+                {
+                    writer.Write(item);
+                }
             }
         }
 

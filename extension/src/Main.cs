@@ -55,7 +55,7 @@ namespace ArmaRAMDb
         /// <summary>
         /// The buffer size for database operations.
         /// </summary>
-        public const int RdbBufferSize = 10240;
+        public const int RdbBufferSize = 20480;
 
         /// <summary>
         /// The main database instance.
@@ -788,7 +788,7 @@ namespace ArmaRAMDb
                     WriteOutput(output, incrbyfloat);
                     return 200;
                 case "save":
-                    WriteOutput(output, RamDb.SaveToFile(Convert.ToBoolean(ResolveKey(args[0])))
+                    WriteOutput(output, RamDb.SaveToFile(Convert.ToBoolean(args[0]))
                         ? "Saved data to disc"
                         : "Error saving to disc");
                     return 100;
@@ -799,7 +799,7 @@ namespace ArmaRAMDb
                         return -1;
                     }
 
-                    WriteOutput(output, RamDb.LoadFromFile(ResolveKey(args[0]))
+                    WriteOutput(output, RamDb.LoadFromFile(args[0].Trim('"'))
                         ? "Loaded data from disc"
                         : "Error loading from disc");
                     return 100;
@@ -841,11 +841,20 @@ namespace ArmaRAMDb
         /// </summary>
         /// <param name="output">A pointer to the output buffer</param>
         /// <param name="payload">The payload to write</param>
-        private unsafe static void WriteOutput(char* output, string payload)
+        /// <param name="maxSize">Maximum size of the output buffer (default: RdbBufferSize)</param>
+        private unsafe static void WriteOutput(char* output, string payload, int maxSize = RdbBufferSize)
         {
             Log($"Writing output: {payload}", "info");
 
             byte[] bytes = Encoding.ASCII.GetBytes(payload + '\0');
+            
+            // Prevent buffer overrun by truncating if necessary
+            if (bytes.Length > maxSize)
+            {
+                Log($"Output truncated from {bytes.Length} to {maxSize} bytes", "warning");
+                bytes = bytes.Take(maxSize - 1).Concat(new byte[] { 0 }).ToArray();
+            }
+            
             Marshal.Copy(bytes, 0, (nint)output, bytes.Length);
         }
     }

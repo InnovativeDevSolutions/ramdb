@@ -2,6 +2,24 @@
 
 This documentation provides details on all functions available in `ArmaRAMDb`. These functions allow you to interact with the in-memory database system for Arma 3.
 
+## Installation
+
+1. Subscribe to the mod on Steam Workshop or download from releases
+2. Create a folder named `@ramdb` in your Arma 3 root directory (same location as `arma3_x64.exe` and/or `arma3server_x64.exe`)
+3. Copy `config.xml` from the mod folder into `@ramdb\config.xml`
+4. Configure the settings in `config.xml` as needed:
+   - Context logging (true/false)
+   - Debug mode (true/false)
+   - Auto backup enabled (true/false)
+   - Backup frequency in minutes (e.g., 15)
+   - Maximum number of backups to keep (e.g., 10)
+5. Launch Arma 3 with the mod enabled
+
+The `@ramdb` folder will store:
+- `data.rdb.gz` - Main database file
+- `backups\` - Automatic backup files
+- `logs\` - Debug and error logs (if debug mode is enabled)
+
 ## Function Categories
 
 The functions are categorized by their purpose:
