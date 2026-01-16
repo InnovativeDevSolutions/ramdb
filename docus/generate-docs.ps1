@@ -183,7 +183,7 @@ $($func.Desc).
 
 ## Syntax
 
-See [SQF Functions](/api/hash) for detailed syntax and examples.
+See the [Hash Operations documentation](/api/hash/hset) for detailed syntax and examples.
 
 ## Related Functions
 
@@ -229,7 +229,7 @@ $($func.Desc).
 
 ## Syntax
 
-See [SQF Functions](/api/list) for detailed syntax and examples.
+See the [List Operations documentation](/api/list/lpush) for detailed syntax and examples.
 
 ## Related Functions
 
