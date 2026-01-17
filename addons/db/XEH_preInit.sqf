@@ -8,4 +8,4 @@ PREP_RECOMPILE_END;
 ADDON = true;
 
 GVAR(inuse) = false;
-GVAR(buffer) = 10240;
+GVAR(buffer) = 20480;
