@@ -202,7 +202,7 @@ $listFunctions = @(
     @{Name="rpush"; Title="rpush"; Desc="Push value to the right of a list"; File="2.rpush.md"; Source="docs\list\listAdd.md"},
     @{Name="lpop"; Title="lpop"; Desc="Pop value from the left of a list"; File="3.lpop.md"; Source="$null"},
     @{Name="rpop"; Title="rpop"; Desc="Pop value from the right of a list"; File="4.rpop.md"; Source="$null"},
-    @{Name="lindex"; Title="lindex"; Desc="Get value at index from a list"; File="5.lindex.md"; Source="docs\list\listGet.md"},
+    @{Name="lidx"; Title="lindex"; Desc="Get value at index from a list"; File="5.lindex.md"; Source="docs\list\listGet.md"},
     @{Name="lrange"; Title="lrange"; Desc="Get range of values from a list"; File="6.lrange.md"; Source="docs\list\listLoad.md"},
     @{Name="lset"; Title="lset"; Desc="Set value at index in a list"; File="7.lset.md"; Source="docs\list\listSet.md"},
     @{Name="lrem"; Title="lrem"; Desc="Remove values from a list"; File="8.lrem.md"; Source="docs\list\listRemove.md"},
