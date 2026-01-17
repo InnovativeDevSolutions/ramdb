@@ -1,0 +1,71 @@
+name: Build
+
+on:
+    push:
+        tags:
+            - 'v*'
+
+permissions:
+    contents: write
+
+jobs:
+    build-extension:
+        strategy:
+            matrix:
+                include:
+                    - os: windows-latest
+                      runtime: win-x64
+                      artifact: ArmaRAMDb_x64.dll
+                    - os: ubuntu-latest
+                      runtime: linux-x64
+                      artifact: ArmaRAMDb_x64.so
+        runs-on: ${{ matrix.os }}
+        steps:
+            - uses: actions/checkout@v2
+            - name: Setup .NET
+              uses: actions/setup-dotnet@v3
+              with:
+                  dotnet-version: '8.0.x'
+            - name: Build Extension
+              run: dotnet publish extension/ArmaRAMDb.csproj -f net8.0 -c Release -r ${{ matrix.runtime }} -p:PublishAot=true -p:NativeLib=Shared -p:SelfContained=true
+            - name: Upload Extension Artifact
+              uses: actions/upload-artifact@v4
+              with:
+                  name: extension-${{ matrix.runtime }}
+                  path: extension/bin/Release/net8.0/${{ matrix.runtime }}/publish/${{ matrix.artifact }}
+
+    build:
+        needs: build-extension
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+            - name: Download Windows Extension
+              uses: actions/download-artifact@v4
+              with:
+                  name: extension-win-x64
+                  path: extension/artifacts/native/
+            - name: Download Linux Extension
+              uses: actions/download-artifact@v4
+              with:
+                  name: extension-linux-x64
+                  path: extension/artifacts/native/
+            - name: Setup HEMTT
+              uses: arma-actions/hemtt@v1
+            - name: Run HEMTT build
+              run: hemtt build
+            - name: Run HEMTT release
+              run: hemtt release
+            - name: Upload Release Artifacts
+              uses: actions/upload-artifact@v4
+              with:
+                  name: ramdb
+                  path: releases/ramdb-*.zip
+            - name: Create GitHub Release
+              if: startsWith(github.ref, 'refs/tags/')
+              uses: softprops/action-gh-release@v2
+              with:
+                  files: releases/ramdb-*.zip
+                  draft: false
+                  prerelease: false
+                  generate_release_notes: true
+                  fail_on_unmatched_files: true
