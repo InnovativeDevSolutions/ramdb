@@ -55,7 +55,7 @@ namespace ArmaRAMDb
         /// <summary>
         /// The buffer size for database operations.
         /// </summary>
-        public const int RdbBufferSize = 1024;
+        public const int RdbBufferSize = 20480;
 
         /// <summary>
         /// The main database instance.
