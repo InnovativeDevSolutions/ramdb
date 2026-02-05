@@ -28,6 +28,10 @@
 
 params ["_uniqueID", "_fnc", "_index", "_total", "_datachunk", "_call", "_obj"];
 
+_index = parseNumber _index;
+_total = parseNumber _total;
+_call = _call isEqualTo "true";
+
 private _dataString = "";
 private _index_array = [];
 private _count_total = -1;
@@ -60,14 +64,20 @@ if (_count_total == _total) then {
         diag_log text format ["ArmaRAMDb: 'ramdb_db_fnc_fetch' Data: %1", _data];
     #endif
 
-    if !(isNil "_obj" || _obj isNotEqualTo "" || _obj isNotEqualTo []) then {
-        if (_call) then {
-            _data remoteExecCall [_fnc, _obj, false];
+    if (_fnc != "") then {
+        if (isNil "_obj" || _obj isEqualTo "" || _obj isEqualTo []) then {
+            if (_call) then {
+                _data call (missionNamespace getVariable _fnc);
+            } else {
+                _data spawn (missionNamespace getVariable _fnc);
+            };
         } else {
-            _data remoteExec [_fnc, _obj, false];
+            if (_call) then {
+                _data remoteExecCall [_fnc, _obj, false];
+            } else {
+                _data remoteExec [_fnc, _obj, false];
+            };
         };
-    } else {
-        _data;
     };
 
     ramdb_db_fetch_array = ramdb_db_fetch_array select {!((_x select 0) in [_uniqueID])};

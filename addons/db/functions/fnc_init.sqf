@@ -16,6 +16,9 @@
  * Public: Yes
  */
 
+// Initialize global variables
+ramdb_db_fetch_array = [];
+
 private _dll = "ArmaRAMDb" callExtension ["version", []];
 
 diag_log text format ["ArmaRAMDb: DLL Version %1 found", _dll];

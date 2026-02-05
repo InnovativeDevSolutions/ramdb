@@ -51,23 +51,44 @@ namespace ArmaRAMDb
         }
 
         /// <summary>
-        ///     Splits a given string into smaller chunks of specified size.
+        ///     Splits a given string into smaller chunks based on byte size.
         ///     This method divides the input string into multiple substrings based
-        ///     on the specified chunk size, ensuring none exceed the given limit.
+        ///     on the specified byte size limit, ensuring none exceed the given limit.
         /// </summary>
         /// <param name="data">The string to be divided into smaller chunks.</param>
-        /// <param name="chunkSize">The size of each chunk.</param>
-        /// <return>A list of substrings, each with a length up to the specified chunk size.</return>
-        public static List<string> SplitIntoChunks(string data, int chunkSize)
+        /// <param name="maxByteSize">The maximum byte size for each chunk.</param>
+        /// <return>A list of substrings, each with a byte size up to the specified limit.</return>
+        public static List<string> SplitIntoChunks(string data, int maxByteSize)
         {
-            var totalChunks = (int)Math.Ceiling(data.Length / (double)chunkSize);
             List<string> chunks = [];
+            var encoding = Encoding.UTF8;
+            var currentIndex = 0;
 
-            for (var i = 0; i < totalChunks; i++)
+            while (currentIndex < data.Length)
             {
-                var start = i * chunkSize;
-                var end = Math.Min(data.Length, start + chunkSize);
-                chunks.Add(data[start..end]);
+                var remainingLength = data.Length - currentIndex;
+                var chunkLength = remainingLength;
+                
+                // Find the maximum substring that fits within maxByteSize
+                while (chunkLength > 0)
+                {
+                    var candidate = data.Substring(currentIndex, chunkLength);
+                    if (encoding.GetByteCount(candidate) <= maxByteSize)
+                    {
+                        chunks.Add(candidate);
+                        currentIndex += chunkLength;
+                        break;
+                    }
+                    chunkLength--;
+                }
+                
+                // Safety check: if chunkLength becomes 0, we have a single character that exceeds maxByteSize
+                if (chunkLength == 0)
+                {
+                    // Take at least one character to avoid infinite loop
+                    chunks.Add(data.Substring(currentIndex, 1));
+                    currentIndex++;
+                }
             }
 
             return chunks;
@@ -87,7 +108,7 @@ namespace ArmaRAMDb
             var listSnapshot = RamDb.ListStore.ToArray();
 
             writer.Write(RamDb.CurrentVersion);
-            
+
             // Write KV Store
             writer.Write(kvSnapshot.Length);
             foreach (var pair in kvSnapshot)
@@ -199,22 +220,32 @@ namespace ArmaRAMDb
         public static string CheckByteCount(string uniqueId, int bufferSize, string data, string function = "",
             string entity = "", bool call = false)
         {
+            if (!data.StartsWith('[') || !data.EndsWith(']')) data = Main.SerializeList([.. data.Split(',')]);
+
             var byteCount = Encoding.UTF8.GetByteCount(data);
 
-            if (!data.StartsWith('[') || !data.EndsWith(']')) data = Main.SerializeList([.. data.Split(',')]);
             if (byteCount > bufferSize)
             {
                 var chunks = SplitIntoChunks(data, bufferSize);
                 var totalChunks = chunks.Count;
+                var cleanFunction = function.Trim('"');
+                var cleanEntity = entity.Trim('"');
 
                 for (var i = 0; i < totalChunks; i++)
                 {
                     var escapedChunk = chunks[i].Replace("\"", "\"\"");
-                    var chunk = $"[\"{uniqueId}\", \"{function}\", {i + 1}, {totalChunks}, \"{escapedChunk}\", {call.ToString().ToLower()}, \"{entity}\"]";
+                    var chunk = $"[\"{uniqueId}\",\"{cleanFunction}\",\"{i + 1}\",\"{totalChunks}\",\"{escapedChunk}\",\"{call.ToString().ToLower()}\",\"{cleanEntity}\"]";
                     Main.Log($"Chunk data: {chunk}", "debug");
                     Main.Callback("ArmaRAMDb", "ramdb_db_fnc_fetch", chunk);
                 }
 
+                return "OK";
+            }
+
+            if (!string.IsNullOrEmpty(function))
+            {
+                Main.Log($"Data: {data}", "debug");
+                Main.Callback("ArmaRAMDb", function.Trim('"'), data);
                 return "OK";
             }
 

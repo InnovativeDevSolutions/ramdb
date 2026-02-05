@@ -10,4 +10,4 @@ addMissionEventHandler ["ExtensionCallback", {
     };
 }];
 
-FUNC(init);
+call FUNC(init);

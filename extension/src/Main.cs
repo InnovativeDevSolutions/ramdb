@@ -55,7 +55,7 @@ namespace ArmaRAMDb
         /// <summary>
         /// The buffer size for database operations.
         /// </summary>
-        public const int RdbBufferSize = 20480;
+        public const int RdbBufferSize = 1024;
 
         /// <summary>
         /// The main database instance.
@@ -398,7 +398,22 @@ namespace ArmaRAMDb
 
                     var get = KeyValueStore.Get(ResolveKey(args[0]));
 
-                    WriteOutput(output, $"{get}");
+                    if (get is null)
+                    {
+                        WriteOutput(output, "NotFound");
+                        return -1;
+                    }
+
+                    if (argc >= 4)
+                    {
+                        WriteOutput(output, Utils.CheckByteCount($"{id}_get", RdbBufferSize, get,
+                            args[1], args[2], Convert.ToBoolean(args[3])));
+                    }
+                    else
+                    {
+                        WriteOutput(output, Utils.CheckByteCount($"{id}_get", RdbBufferSize, get));
+                    }
+
                     return 200;
                 case "del":
                     if (argc < 1)
