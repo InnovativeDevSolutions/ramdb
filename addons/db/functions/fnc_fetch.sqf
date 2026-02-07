@@ -78,6 +78,8 @@ if (_count_total == _total) then {
                 _data remoteExec [_fnc, _obj, false];
             };
         };
+    } else {
+        _data;
     };
 
     ramdb_db_fetch_array = ramdb_db_fetch_array select {!((_x select 0) in [_uniqueID])};
